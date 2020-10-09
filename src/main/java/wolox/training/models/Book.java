@@ -3,35 +3,51 @@ package wolox.training.models;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Book {
 
     private String genre;
+
+    @NotNull
     @Column(nullable = false)
     private String author;
 
+    @NotNull
     @Column(nullable = false)
     private String image;
 
+    @NotNull
     @Column(nullable = false)
     private String title;
 
+    @NotNull
     @Column(nullable = false)
     private String subtitle;
 
+    @NotNull
     @Column(nullable = false)
     private String publisher;
 
+    @NotNull
     @Column(nullable = false)
     private String year;
 
+    @NotNull
     @Column(nullable = false)
     private String pages;
 
-    @Id
+    @NotNull
+    @Column(nullable = false, unique = true)
     private String isbn;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long id;
 
     public Book() {}
 
@@ -124,12 +140,13 @@ public class Book {
             publisher.equals(book.publisher) &&
             year.equals(book.year) &&
             pages.equals(book.pages) &&
-            isbn.equals(book.isbn);
+            isbn.equals(book.isbn) &&
+            id.equals(book.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(genre, author, image, title, subtitle, publisher, year, pages, isbn);
+        return Objects.hash(genre, author, image, title, subtitle, publisher, year, pages, isbn, id);
     }
 
     @Override
@@ -144,6 +161,7 @@ public class Book {
             ", year='" + year + '\'' +
             ", pages='" + pages + '\'' +
             ", isbn='" + isbn + '\'' +
+            ", id=" + id +
             '}';
     }
 }
