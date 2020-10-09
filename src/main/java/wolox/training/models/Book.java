@@ -58,7 +58,7 @@ public class Book {
     }
 
     public void setGenre(String genre) {
-        genre = genre;
+        this.genre = genre;
     }
 
     public String getAuthor() {
@@ -66,7 +66,7 @@ public class Book {
     }
 
     public void setAuthor(String author) {
-        author = author;
+        this.author = author;
     }
 
     public String getImage() {
@@ -74,7 +74,7 @@ public class Book {
     }
 
     public void setImage(String image) {
-        image = image;
+        this.image = image;
     }
 
     public String getTitle() {
@@ -82,7 +82,7 @@ public class Book {
     }
 
     public void setTitle(String title) {
-        title = title;
+        this.title = title;
     }
 
     public String getSubtitle() {
@@ -90,7 +90,7 @@ public class Book {
     }
 
     public void setSubtitle(String subtitle) {
-        subtitle = subtitle;
+        this.subtitle = subtitle;
     }
 
     public String getPublisher() {
@@ -98,7 +98,7 @@ public class Book {
     }
 
     public void setPublisher(String publisher) {
-        publisher = publisher;
+        this.publisher = publisher;
     }
 
     public String getYear() {
@@ -106,7 +106,7 @@ public class Book {
     }
 
     public void setYear(String year) {
-        year = year;
+        this.year = year;
     }
 
     public String getPages() {
@@ -114,7 +114,7 @@ public class Book {
     }
 
     public void setPages(String pages) {
-        pages = pages;
+        this.pages = pages;
     }
 
     public String getIsbn() {
