@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 import wolox.training.models.Book;
 
 @Repository
-public interface BookRepository extends JpaRepository<Book, String> {
+public interface BookRepository extends JpaRepository<Book, Long> {
 
     Book findByAuthor(String author);
 }
