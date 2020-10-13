@@ -38,12 +38,13 @@ public class BookController {
 
     @GetMapping("/{id}")
     public Book findOne(@PathVariable Long id) {
-        return bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
+        return bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException("Book id " + id + " not found"));
     }
 
     @GetMapping(params = "author")
     public Book findByAuthor(@RequestParam String author) {
-        return bookRepository.findOneByAuthor(author).orElseThrow(BookNotFoundException::new);
+        return bookRepository.findOneByAuthor(author).orElseThrow(() -> new BookNotFoundException("Books by author "
+            + author + " not found"));
     }
 
     @PostMapping
@@ -54,7 +55,8 @@ public class BookController {
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-        Book b = bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
+        Book b = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException("Book id " + id + " not "
+            + "found"));
         bookRepository.delete(b);
     }
 
@@ -63,7 +65,7 @@ public class BookController {
         if (!book.getId().equals(id)) {
             throw new BookIdMismatchException("The book's id does not correspond to the data to be updated");
         } else  {
-            bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
+            bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException("Book id " + id + " not found"));
             return bookRepository.save(book);
         }
     }
