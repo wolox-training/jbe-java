@@ -1,5 +1,9 @@
 package wolox.training.controllers;
 
+import static wolox.training.utils.ErrorConstants.BOOK_BY_AUTHOR_NOT_FOUND;
+import static wolox.training.utils.ErrorConstants.BOOK_ID_MISTMATCH;
+import static wolox.training.utils.ErrorConstants.BOOK_NOT_FOUND;
+
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,13 +42,14 @@ public class BookController {
 
     @GetMapping("/{id}")
     public Book findOne(@PathVariable Long id) {
-        return bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException("Book id " + id + " not found"));
+        return bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(String.format(BOOK_NOT_FOUND,
+         id)));
     }
 
     @GetMapping(params = "author")
     public Book findByAuthor(@RequestParam String author) {
-        return bookRepository.findOneByAuthor(author).orElseThrow(() -> new BookNotFoundException("Books by author "
-            + author + " not found"));
+        return bookRepository.findOneByAuthor(author).orElseThrow(() ->
+            new BookNotFoundException(String.format(BOOK_BY_AUTHOR_NOT_FOUND, author)));
     }
 
     @PostMapping
@@ -55,17 +60,17 @@ public class BookController {
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-        Book b = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException("Book id " + id + " not "
-            + "found"));
+        Book b =
+            bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(String.format(BOOK_NOT_FOUND, id)));
         bookRepository.delete(b);
     }
 
     @PutMapping("/{id}")
     public Book update(@PathVariable Long id, @RequestBody @Valid Book book) {
         if (!book.getId().equals(id)) {
-            throw new BookIdMismatchException("The book's id does not correspond to the data to be updated");
+            throw new BookIdMismatchException(BOOK_ID_MISTMATCH);
         } else  {
-            bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException("Book id " + id + " not found"));
+            bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(String.format(BOOK_NOT_FOUND, id)));
             return bookRepository.save(book);
         }
     }
