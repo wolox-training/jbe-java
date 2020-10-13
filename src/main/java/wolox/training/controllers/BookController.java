@@ -37,13 +37,13 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public Book findOne(@PathVariable Long id) throws BookNotFoundException {
+    public Book findOne(@PathVariable Long id) {
         return bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
     }
 
     @GetMapping(params = "author")
     public Book findByAuthor(@RequestParam String author) {
-        return bookRepository.findOneByAuthor(author);
+        return bookRepository.findOneByAuthor(author).orElseThrow(BookNotFoundException::new);
     }
 
     @PostMapping
@@ -61,7 +61,7 @@ public class BookController {
     @PutMapping("/{id}")
     public Book update(@PathVariable Long id, @RequestBody @Valid Book book) {
         if (!book.getId().equals(id)) {
-            throw new BookIdMismatchException();
+            throw new BookIdMismatchException("The book's id does not correspond to the data to be updated");
         } else  {
             bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
             return bookRepository.save(book);
