@@ -2,18 +2,19 @@ package wolox.training.models;
 
 import static wolox.training.utils.ErrorConstants.BOOK_ALREADY_OWNED;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -22,6 +23,7 @@ import wolox.training.exceptions.BookAlreadyOwnedException;
 
 @Entity
 @Table(name = "t_user")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class User {
 
     @Id
@@ -43,11 +45,7 @@ public class User {
 
     @NotNull
     @Column(nullable = false)
-    @ManyToMany
-    @JoinTable(name = "USER_BOOK",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "book_id")
-    )
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     private List<Book> books = new ArrayList<>();
 
     public User() {}
@@ -97,7 +95,7 @@ public class User {
     }
 
     public void removeBook(Book book) {
-        this.books.remove(book);
+        if (books.contains(book)) this.books.remove(book);
     }
 
     @Override
