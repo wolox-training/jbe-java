@@ -1,11 +1,13 @@
 package wolox.training.models;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkArgument;
 import static wolox.training.utils.ErrorConstants.BOOK_ALREADY_OWNED;
 import static wolox.training.utils.ErrorConstants.BOOK_NOT_FOUND;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.google.common.base.Strings;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,7 +63,8 @@ public class User {
     }
 
     public void setUsername(String username) {
-        this.username = checkNotNull(username);
+        checkArgument(!Strings.isNullOrEmpty(username));
+        this.username = username;
     }
 
     public String getName() {
@@ -69,7 +72,8 @@ public class User {
     }
 
     public void setName(String name) {
-        this.name = checkNotNull(name);
+        checkArgument(!Strings.isNullOrEmpty(name));
+        this.name = name;
     }
 
     public LocalDate getBirthdate() {
