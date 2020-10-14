@@ -1,5 +1,6 @@
 package wolox.training.models;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static wolox.training.utils.ErrorConstants.BOOK_ALREADY_OWNED;
 import static wolox.training.utils.ErrorConstants.BOOK_NOT_FOUND;
 
@@ -60,7 +61,7 @@ public class User {
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.username = checkNotNull(username);
     }
 
     public String getName() {
@@ -68,7 +69,7 @@ public class User {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = checkNotNull(name);
     }
 
     public LocalDate getBirthdate() {
@@ -76,7 +77,7 @@ public class User {
     }
 
     public void setBirthdate(LocalDate birthdate) {
-        this.birthdate = birthdate;
+        this.birthdate = checkNotNull(birthdate);
     }
 
     public List<Book> getBooks() {
@@ -84,7 +85,7 @@ public class User {
     }
 
     public void addBook(Book book) {
-        if (books.contains(book)) {
+        if (books.contains(checkNotNull(book))) {
             throw new BookAlreadyOwnedException(BOOK_ALREADY_OWNED);
         } else {
             this.books.add(book);
@@ -92,7 +93,7 @@ public class User {
     }
 
     public void removeBook(Book book) {
-        if (books.contains(book)) {
+        if (books.contains(checkNotNull(book))) {
             this.books.remove(book);
         } else {
             throw new BookNotFoundException(String.format(BOOK_NOT_FOUND, book.getId()));
