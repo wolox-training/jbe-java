@@ -88,7 +88,7 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/{id}/books/{book_id}")
+    @PatchMapping("/{id}/books/{book_id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeBook(@PathVariable Long id, @RequestBody @Valid Book book) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
