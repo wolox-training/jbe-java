@@ -1,6 +1,7 @@
 package wolox.training.models;
 
 import static wolox.training.utils.ErrorConstants.BOOK_ALREADY_OWNED;
+import static wolox.training.utils.ErrorConstants.BOOK_NOT_FOUND;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -20,6 +21,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import wolox.training.exceptions.BookAlreadyOwnedException;
+import wolox.training.exceptions.BookNotFoundException;
 
 @Entity
 @Table(name = "t_user")
@@ -44,8 +46,7 @@ public class User {
     private LocalDate birthdate;
 
     @NotNull
-    @Column(nullable = false)
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     private List<Book> books = new ArrayList<>();
 
     public User() {}
@@ -95,7 +96,11 @@ public class User {
     }
 
     public void removeBook(Book book) {
-        if (books.contains(book)) this.books.remove(book);
+        if (books.contains(book)) {
+            this.books.remove(book);
+        } else {
+            throw new BookNotFoundException(String.format(BOOK_NOT_FOUND, book.getId()));
+        }
     }
 
     @Override
