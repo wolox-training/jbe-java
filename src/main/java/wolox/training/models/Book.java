@@ -1,15 +1,20 @@
 package wolox.training.models;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Book {
 
     private String genre;
@@ -50,6 +55,9 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "BOOK_SEQ")
     @SequenceGenerator(name = "BOOK_SEQ", sequenceName = "BOOK_SEQ")
     private Long id;
+
+    @ManyToMany(mappedBy = "books")
+    private List<User> users;
 
     public Book() {}
 
@@ -127,6 +135,14 @@ public class Book {
 
     public Long getId() {
         return id;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
     @Override
