@@ -1,7 +1,7 @@
 package wolox.training.controllers;
 
 import static wolox.training.utils.ErrorConstants.BOOK_BY_AUTHOR_NOT_FOUND;
-import static wolox.training.utils.ErrorConstants.BOOK_ID_MISTMATCH;
+import static wolox.training.utils.ErrorConstants.BOOK_ID_MISMATCH;
 import static wolox.training.utils.ErrorConstants.BOOK_NOT_FOUND;
 
 import java.util.List;
@@ -68,7 +68,7 @@ public class BookController {
     @PutMapping("/{id}")
     public Book update(@PathVariable Long id, @RequestBody @Valid Book book) {
         if (!book.getId().equals(id)) {
-            throw new BookIdMismatchException(BOOK_ID_MISTMATCH);
+            throw new BookIdMismatchException(BOOK_ID_MISMATCH);
         } else  {
             bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(String.format(BOOK_NOT_FOUND, id)));
             return bookRepository.save(book);
