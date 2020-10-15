@@ -82,6 +82,7 @@ public class User {
 
     public void setBirthdate(LocalDate birthdate) {
         this.birthdate = checkNotNull(birthdate);
+        checkArgument(birthdate.isBefore(LocalDate.now()));
     }
 
     public List<Book> getBooks() {

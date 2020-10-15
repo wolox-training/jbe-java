@@ -1,7 +1,6 @@
 package wolox.training.models;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -18,10 +17,13 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
+import org.apache.commons.lang3.StringUtils;
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Book {
+
+    private static final int MIN_ISBN = 1_000_000_000;
 
     private String genre;
 
@@ -125,7 +127,7 @@ public class Book {
     }
 
     public void setYear(String year) {
-        checkArgument(!Strings.isNullOrEmpty(year));
+        checkArgument(!Strings.isNullOrEmpty(year) && StringUtils.isNumeric(year));
         this.year = year;
     }
 
@@ -134,7 +136,8 @@ public class Book {
     }
 
     public void setPages(String pages) {
-        checkArgument(!Strings.isNullOrEmpty(pages));
+        checkArgument(!Strings.isNullOrEmpty(pages)
+            && StringUtils.isNumeric(pages) && Integer.parseInt(pages) > 0);
         this.pages = pages;
     }
 
@@ -143,7 +146,7 @@ public class Book {
     }
 
     public void setIsbn(String isbn) {
-        checkArgument(!Strings.isNullOrEmpty(isbn));
+        checkArgument(!Strings.isNullOrEmpty(isbn) && StringUtils.isNumeric(isbn));
         this.isbn = isbn;
     }
 
