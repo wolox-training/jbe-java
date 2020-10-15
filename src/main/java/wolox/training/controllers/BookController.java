@@ -24,6 +24,13 @@ import wolox.training.exceptions.BookNotFoundException;
 import wolox.training.models.Book;
 import wolox.training.repositories.BookRepository;
 
+/**
+ * Web controller to handle the books resource request
+ *
+ * @author Juan David Bermudez
+ * @version 1.0
+ * @since 1.0
+ */
 @RestController
 @RequestMapping(value = "/books", produces = MediaType.APPLICATION_JSON_VALUE)
 public class BookController {
@@ -43,7 +50,7 @@ public class BookController {
     @GetMapping("/{id}")
     public Book findOne(@PathVariable Long id) {
         return bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(String.format(BOOK_NOT_FOUND,
-         id)));
+            id)));
     }
 
     @GetMapping(params = "author")
@@ -69,7 +76,7 @@ public class BookController {
     public Book update(@PathVariable Long id, @RequestBody @Valid Book book) {
         if (!book.getId().equals(id)) {
             throw new BookIdMismatchException(BOOK_ID_MISMATCH);
-        } else  {
+        } else {
             bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(String.format(BOOK_NOT_FOUND, id)));
             return bookRepository.save(book);
         }
