@@ -1,7 +1,7 @@
 package wolox.training.models;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static wolox.training.utils.ErrorConstants.BOOK_ALREADY_OWNED;
 import static wolox.training.utils.ErrorConstants.BOOK_NOT_FOUND;
 import static wolox.training.utils.ErrorConstants.BOOK_NOT_NULL;
@@ -28,7 +28,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import org.apache.commons.lang3.StringUtils;
 import wolox.training.exceptions.BookAlreadyOwnedException;
 import wolox.training.exceptions.BookNotFoundException;
 
@@ -87,8 +86,9 @@ public class User {
     }
 
     public void setBirthdate(LocalDate birthdate) {
-        this.birthdate = checkNotNull(birthdate, OBLIGATORY_BIRTHDATE_FIELD);
+        checkNotNull(birthdate, OBLIGATORY_BIRTHDATE_FIELD);
         checkArgument(birthdate.isBefore(LocalDate.now()), INVALID_BIRTHDATE);
+        this.birthdate = birthdate;
     }
 
     public List<Book> getBooks() {
