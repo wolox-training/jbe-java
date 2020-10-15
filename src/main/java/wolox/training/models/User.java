@@ -1,10 +1,18 @@
 package wolox.training.models;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static wolox.training.utils.ErrorConstants.BOOK_ALREADY_OWNED;
 import static wolox.training.utils.ErrorConstants.BOOK_NOT_FOUND;
+import static wolox.training.utils.ErrorConstants.BOOK_NOT_NULL;
+import static wolox.training.utils.ErrorConstants.INVALID_BIRTHDATE;
+import static wolox.training.utils.ErrorConstants.OBLIGATORY_BIRTHDATE_FIELD;
+import static wolox.training.utils.ErrorConstants.OBLIGATORY_NAME_FIELD;
+import static wolox.training.utils.ErrorConstants.OBLIGATORY_USERNAME_FIELD;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.google.common.base.Strings;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,6 +68,7 @@ public class User {
     }
 
     public void setUsername(String username) {
+        checkArgument(!Strings.isNullOrEmpty(username), OBLIGATORY_USERNAME_FIELD);
         this.username = username;
     }
 
@@ -68,6 +77,7 @@ public class User {
     }
 
     public void setName(String name) {
+        checkArgument(!Strings.isNullOrEmpty(name), OBLIGATORY_NAME_FIELD);
         this.name = name;
     }
 
@@ -76,6 +86,8 @@ public class User {
     }
 
     public void setBirthdate(LocalDate birthdate) {
+        checkNotNull(birthdate, OBLIGATORY_BIRTHDATE_FIELD);
+        checkArgument(birthdate.isBefore(LocalDate.now()), INVALID_BIRTHDATE);
         this.birthdate = birthdate;
     }
 
@@ -84,7 +96,7 @@ public class User {
     }
 
     public void addBook(Book book) {
-        if (books.contains(book)) {
+        if (books.contains(checkNotNull(book, BOOK_NOT_NULL))) {
             throw new BookAlreadyOwnedException(BOOK_ALREADY_OWNED);
         } else {
             this.books.add(book);
@@ -92,7 +104,7 @@ public class User {
     }
 
     public void removeBook(Book book) {
-        if (books.contains(book)) {
+        if (books.contains(checkNotNull(book, BOOK_NOT_NULL))) {
             this.books.remove(book);
         } else {
             throw new BookNotFoundException(String.format(BOOK_NOT_FOUND, book.getId()));
