@@ -1,6 +1,19 @@
 package wolox.training.models;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static wolox.training.utils.ErrorConstants.INVALID_ISBN;
+import static wolox.training.utils.ErrorConstants.INVALID_PAGES;
+import static wolox.training.utils.ErrorConstants.INVALID_YEAR;
+import static wolox.training.utils.ErrorConstants.OBLIGATORY_AUTHOR_FIELD;
+import static wolox.training.utils.ErrorConstants.OBLIGATORY_IMAGE_FIELD;
+import static wolox.training.utils.ErrorConstants.OBLIGATORY_ISBN_FIELD;
+import static wolox.training.utils.ErrorConstants.OBLIGATORY_NAME_FIELD;
+import static wolox.training.utils.ErrorConstants.OBLIGATORY_PAGES_FIELD;
+import static wolox.training.utils.ErrorConstants.OBLIGATORY_PUBLISHER_FIELD;
+import static wolox.training.utils.ErrorConstants.OBLIGATORY_SUBTITLE_FIELD;
+import static wolox.training.utils.ErrorConstants.OBLIGATORY_TITLE_FIELD;
+import static wolox.training.utils.ErrorConstants.OBLIGATORY_YEAR_FIELD;
+import static wolox.training.utils.ErrorConstants.PAGES_LESS_THAN_ZERO;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -22,8 +35,6 @@ import org.apache.commons.lang3.StringUtils;
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Book {
-
-    private static final int MIN_ISBN = 1_000_000_000;
 
     private String genre;
 
@@ -82,7 +93,7 @@ public class Book {
     }
 
     public void setAuthor(String author) {
-        checkArgument(!Strings.isNullOrEmpty(author));
+        checkArgument(!Strings.isNullOrEmpty(author), OBLIGATORY_AUTHOR_FIELD);
         this.author = author;
     }
 
@@ -91,7 +102,7 @@ public class Book {
     }
 
     public void setImage(String image) {
-        checkArgument(!Strings.isNullOrEmpty(image));
+        checkArgument(!Strings.isNullOrEmpty(image), OBLIGATORY_IMAGE_FIELD);
         this.image = image;
     }
 
@@ -100,7 +111,7 @@ public class Book {
     }
 
     public void setTitle(String title) {
-        checkArgument(!Strings.isNullOrEmpty(title));
+        checkArgument(!Strings.isNullOrEmpty(title), OBLIGATORY_TITLE_FIELD);
         this.title = title;
     }
 
@@ -109,7 +120,7 @@ public class Book {
     }
 
     public void setSubtitle(String subtitle) {
-        checkArgument(!Strings.isNullOrEmpty(subtitle));
+        checkArgument(!Strings.isNullOrEmpty(subtitle), OBLIGATORY_SUBTITLE_FIELD);
         this.subtitle = subtitle;
     }
 
@@ -118,7 +129,7 @@ public class Book {
     }
 
     public void setPublisher(String publisher) {
-        checkArgument(!Strings.isNullOrEmpty(publisher));
+        checkArgument(!Strings.isNullOrEmpty(publisher), OBLIGATORY_PUBLISHER_FIELD);
         this.publisher = publisher;
     }
 
@@ -127,7 +138,8 @@ public class Book {
     }
 
     public void setYear(String year) {
-        checkArgument(!Strings.isNullOrEmpty(year) && StringUtils.isNumeric(year));
+        checkArgument(!Strings.isNullOrEmpty(year),OBLIGATORY_YEAR_FIELD);
+        checkArgument(StringUtils.isNumeric(year), INVALID_YEAR);
         this.year = year;
     }
 
@@ -136,8 +148,9 @@ public class Book {
     }
 
     public void setPages(String pages) {
-        checkArgument(!Strings.isNullOrEmpty(pages)
-            && StringUtils.isNumeric(pages) && Integer.parseInt(pages) > 0);
+        checkArgument(!Strings.isNullOrEmpty(pages), OBLIGATORY_PAGES_FIELD);
+        checkArgument(StringUtils.isNumeric(pages), INVALID_PAGES);
+        checkArgument(Integer.parseInt(pages) > 0, PAGES_LESS_THAN_ZERO);
         this.pages = pages;
     }
 
@@ -146,7 +159,8 @@ public class Book {
     }
 
     public void setIsbn(String isbn) {
-        checkArgument(!Strings.isNullOrEmpty(isbn) && StringUtils.isNumeric(isbn));
+        checkArgument(!Strings.isNullOrEmpty(isbn), OBLIGATORY_ISBN_FIELD);
+        checkArgument(StringUtils.isNumeric(isbn), INVALID_ISBN);
         this.isbn = isbn;
     }
 
