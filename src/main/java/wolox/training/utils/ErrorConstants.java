@@ -1,5 +1,12 @@
 package wolox.training.utils;
 
+/**
+ * This class contains the messages for business errors
+ *
+ * @author Juan David Bermudez
+ * @version 1.0
+ * @since 1.0
+ */
 public final class ErrorConstants {
 
     // Book error messages
@@ -25,6 +32,7 @@ public final class ErrorConstants {
     // User error messages
     public static final String BOOK_ALREADY_OWNED = "The user already has this book";
     public static final String USER_NOT_FOUND = "User id %s not found";
+    public static final String USER_BY_USERNAME_NOT_FOUND = "User by username %s not found";
     public static final String USER_ID_MISMATCH = "The user id does not correspond with the body data";
 
     // User preconditions error messages

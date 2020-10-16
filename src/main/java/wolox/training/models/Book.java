@@ -7,7 +7,6 @@ import static wolox.training.utils.ErrorConstants.INVALID_YEAR;
 import static wolox.training.utils.ErrorConstants.OBLIGATORY_AUTHOR_FIELD;
 import static wolox.training.utils.ErrorConstants.OBLIGATORY_IMAGE_FIELD;
 import static wolox.training.utils.ErrorConstants.OBLIGATORY_ISBN_FIELD;
-import static wolox.training.utils.ErrorConstants.OBLIGATORY_NAME_FIELD;
 import static wolox.training.utils.ErrorConstants.OBLIGATORY_PAGES_FIELD;
 import static wolox.training.utils.ErrorConstants.OBLIGATORY_PUBLISHER_FIELD;
 import static wolox.training.utils.ErrorConstants.OBLIGATORY_SUBTITLE_FIELD;
@@ -32,6 +31,13 @@ import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * This class represent a book and its attributes
+ *
+ * @author Juan David Bermudez
+ * @version 1.0
+ * @since 1.0
+ */
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Book {

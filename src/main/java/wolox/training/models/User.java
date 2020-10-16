@@ -31,6 +31,13 @@ import javax.validation.constraints.NotNull;
 import wolox.training.exceptions.BookAlreadyOwnedException;
 import wolox.training.exceptions.BookNotFoundException;
 
+/**
+ * This class represent a user and its attributes
+ *
+ * @author Juan David Bermudez
+ * @version 1.0
+ * @since 1.0
+ */
 @Entity
 @Table(name = "t_user")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
@@ -95,6 +102,12 @@ public class User {
         return Collections.unmodifiableList(books);
     }
 
+    /**
+     * Add a book to the user's book collection
+     * @param book must not be null
+     * @throws NullPointerException if book is null
+     * @throws BookAlreadyOwnedException if user already has the book
+     */
     public void addBook(Book book) {
         if (books.contains(checkNotNull(book, BOOK_NOT_NULL))) {
             throw new BookAlreadyOwnedException(BOOK_ALREADY_OWNED);
@@ -103,6 +116,12 @@ public class User {
         }
     }
 
+    /**
+     * Remove a book from the user's book collection
+     * @param book must not be null
+     * @throws NullPointerException if book is null
+     * @throws BookNotFoundException if user does not have the book to be removed
+     */
     public void removeBook(Book book) {
         if (books.contains(checkNotNull(book, BOOK_NOT_NULL))) {
             this.books.remove(book);

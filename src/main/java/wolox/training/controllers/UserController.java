@@ -1,6 +1,7 @@
 package wolox.training.controllers;
 
 import static wolox.training.utils.ErrorConstants.BOOK_NOT_FOUND;
+import static wolox.training.utils.ErrorConstants.USER_BY_USERNAME_NOT_FOUND;
 import static wolox.training.utils.ErrorConstants.USER_ID_MISMATCH;
 import static wolox.training.utils.ErrorConstants.USER_NOT_FOUND;
 
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import wolox.training.exceptions.BookNotFoundException;
@@ -27,6 +29,13 @@ import wolox.training.models.User;
 import wolox.training.repositories.BookRepository;
 import wolox.training.repositories.UserRepository;
 
+/**
+ * Web controller to handle the users resource request
+ *
+ * @author Juan David Bermudez
+ * @version 1.0
+ * @since 1.0
+ */
 @RestController
 @RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
@@ -49,6 +58,12 @@ public class UserController {
     public User findById(@PathVariable Long id) {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(String.format(USER_NOT_FOUND,
          id)));
+    }
+
+    @GetMapping(params = "username")
+    public User findOneByUsername(@RequestParam String username) {
+        return userRepository.findOneByUsername(username).orElseThrow(()
+            -> new UserNotFoundException(String.format(USER_BY_USERNAME_NOT_FOUND, username)));
     }
 
     @PostMapping
