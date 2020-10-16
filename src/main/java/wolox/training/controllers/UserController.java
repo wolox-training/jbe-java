@@ -4,6 +4,24 @@ import static wolox.training.utils.ErrorConstants.BOOK_NOT_FOUND;
 import static wolox.training.utils.ErrorConstants.USER_BY_USERNAME_NOT_FOUND;
 import static wolox.training.utils.ErrorConstants.USER_ID_MISMATCH;
 import static wolox.training.utils.ErrorConstants.USER_NOT_FOUND;
+import static wolox.training.utils.SwaggerConstants.RESPONSE_CODE_400;
+import static wolox.training.utils.SwaggerConstants.RESPONSE_CODE_404;
+import static wolox.training.utils.SwaggerConstants.RESPONSE_CODE_500;
+import static wolox.training.utils.SwaggerConstants.USER_CONTROLLER_ADD_BOOK;
+import static wolox.training.utils.SwaggerConstants.USER_CONTROLLER_ADD_BOOK_204;
+import static wolox.training.utils.SwaggerConstants.USER_CONTROLLER_CREATE;
+import static wolox.training.utils.SwaggerConstants.USER_CONTROLLER_CREATE_201;
+import static wolox.training.utils.SwaggerConstants.USER_CONTROLLER_DELETE;
+import static wolox.training.utils.SwaggerConstants.USER_CONTROLLER_FIND_ALL;
+import static wolox.training.utils.SwaggerConstants.USER_CONTROLLER_FIND_ALL_200;
+import static wolox.training.utils.SwaggerConstants.USER_CONTROLLER_FIND_200;
+import static wolox.training.utils.SwaggerConstants.USER_CONTROLLER_FIND_BY_ID;
+import static wolox.training.utils.SwaggerConstants.USER_CONTROLLER_FIND_ONE_BY_USERNAME;
+import static wolox.training.utils.SwaggerConstants.USER_CONTROLLER_REMOVE_204;
+import static wolox.training.utils.SwaggerConstants.USER_CONTROLLER_REMOVE_BOOK;
+import static wolox.training.utils.SwaggerConstants.USER_CONTROLLER_REMOVE_BOOK_204;
+import static wolox.training.utils.SwaggerConstants.USER_CONTROLLER_UPDATE;
+import static wolox.training.utils.SwaggerConstants.USER_CONTROLLER_UPDATE_204;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -55,9 +73,9 @@ public class UserController {
         this.bookRepository = bookRepository;
     }
 
-    @ApiOperation(value = "find all users")
+    @ApiOperation(value = USER_CONTROLLER_FIND_ALL)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Succesfully retrieved users", responseContainer = "List",
+        @ApiResponse(code = 200, message = USER_CONTROLLER_FIND_ALL_200, responseContainer = "List",
             response = User.class)
     })
     @GetMapping
@@ -65,11 +83,11 @@ public class UserController {
         return userRepository.findAll();
     }
 
-    @ApiOperation(value = "find user by its id", response = User.class)
+    @ApiOperation(value = USER_CONTROLLER_FIND_BY_ID, response = User.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Succesfully retrieved user"),
-        @ApiResponse(code = 400, message = "Malformed body request"),
-        @ApiResponse(code = 404, message = "The resource is not found")
+        @ApiResponse(code = 200, message = USER_CONTROLLER_FIND_200),
+        @ApiResponse(code = 400, message = RESPONSE_CODE_400),
+        @ApiResponse(code = 404, message = RESPONSE_CODE_404)
     })
     @GetMapping("/{id}")
     public User findById(@ApiParam(value = "id", required = true) @PathVariable Long id) {
@@ -77,11 +95,11 @@ public class UserController {
             id)));
     }
 
-    @ApiOperation(value = "find user by its username")
+    @ApiOperation(value = USER_CONTROLLER_FIND_ONE_BY_USERNAME)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Succesfully retrieved user", response = User.class),
-        @ApiResponse(code = 400, message = "Malformed body request"),
-        @ApiResponse(code = 404, message = "The resource is not found")
+        @ApiResponse(code = 200, message = USER_CONTROLLER_FIND_200, response = User.class),
+        @ApiResponse(code = 400, message = RESPONSE_CODE_400),
+        @ApiResponse(code = 404, message = RESPONSE_CODE_404)
     })
     @GetMapping(params = "username")
     public User findOneByUsername(@ApiParam(name = "username", required = true) @RequestParam String username) {
@@ -89,11 +107,11 @@ public class UserController {
             -> new UserNotFoundException(String.format(USER_BY_USERNAME_NOT_FOUND, username)));
     }
 
-    @ApiOperation(value = "Add a new user")
+    @ApiOperation(value = USER_CONTROLLER_CREATE)
     @ApiResponses(value = {
-        @ApiResponse(code = 201, message = "User succesfully added"),
-        @ApiResponse(code = 400, message = "Malformed body request"),
-        @ApiResponse(code = 500, message = "An unexpected error happened")
+        @ApiResponse(code = 201, message = USER_CONTROLLER_CREATE_201),
+        @ApiResponse(code = 400, message = RESPONSE_CODE_400),
+        @ApiResponse(code = 500, message = RESPONSE_CODE_500)
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -101,11 +119,11 @@ public class UserController {
         userRepository.save(user);
     }
 
-    @ApiOperation(value = "Remove an existing user")
+    @ApiOperation(value = USER_CONTROLLER_DELETE)
     @ApiResponses(value = {
-        @ApiResponse(code = 201, message = "User succesfully removed"),
-        @ApiResponse(code = 404, message = "The resource is not found"),
-        @ApiResponse(code = 500, message = "An unexpected error happened")
+        @ApiResponse(code = 204, message = USER_CONTROLLER_REMOVE_204),
+        @ApiResponse(code = 404, message = RESPONSE_CODE_404),
+        @ApiResponse(code = 500, message = RESPONSE_CODE_500)
     })
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -115,12 +133,12 @@ public class UserController {
         userRepository.delete(user);
     }
 
-    @ApiOperation(value = "Update an existing user")
+    @ApiOperation(value = USER_CONTROLLER_UPDATE)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "User succesfully updated", response = User.class),
-        @ApiResponse(code = 400, message = "Malformed body request"),
-        @ApiResponse(code = 404, message = "The resource is not found"),
-        @ApiResponse(code = 500, message = "An unexpected error happened")
+        @ApiResponse(code = 200, message = USER_CONTROLLER_UPDATE_204, response = User.class),
+        @ApiResponse(code = 400, message = RESPONSE_CODE_400),
+        @ApiResponse(code = 404, message = RESPONSE_CODE_404),
+        @ApiResponse(code = 500, message = RESPONSE_CODE_500)
     })
     @PutMapping("/{id}")
     public User update(
@@ -135,12 +153,12 @@ public class UserController {
         }
     }
 
-    @ApiOperation(value = "Add a new book to user's collection")
+    @ApiOperation(value = USER_CONTROLLER_ADD_BOOK)
     @ApiResponses(value = {
-        @ApiResponse(code = 204, message = "Book succesfully added"),
-        @ApiResponse(code = 400, message = "Malformed body request"),
-        @ApiResponse(code = 404, message = "The resource is not found"),
-        @ApiResponse(code = 500, message = "An unexpected error happened")
+        @ApiResponse(code = 204, message = USER_CONTROLLER_ADD_BOOK_204),
+        @ApiResponse(code = 400, message = RESPONSE_CODE_400),
+        @ApiResponse(code = 404, message = RESPONSE_CODE_404),
+        @ApiResponse(code = 500, message = RESPONSE_CODE_500)
     })
     @PatchMapping("/{id}/books")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -157,12 +175,12 @@ public class UserController {
         }
     }
 
-    @ApiOperation(value = "Remove a book from user's collection")
+    @ApiOperation(value = USER_CONTROLLER_REMOVE_BOOK)
     @ApiResponses(value = {
-        @ApiResponse(code = 204, message = "Book succesfully removed"),
-        @ApiResponse(code = 400, message = "Malformed body request"),
-        @ApiResponse(code = 404, message = "The resource is not found"),
-        @ApiResponse(code = 500, message = "An unexpected error happened")
+        @ApiResponse(code = 204, message = USER_CONTROLLER_REMOVE_BOOK_204),
+        @ApiResponse(code = 400, message = RESPONSE_CODE_400),
+        @ApiResponse(code = 404, message = RESPONSE_CODE_404),
+        @ApiResponse(code = 500, message = RESPONSE_CODE_500)
     })
     @PatchMapping("/{id}/books/{book_id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
