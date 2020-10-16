@@ -13,6 +13,8 @@ import static wolox.training.utils.ErrorConstants.OBLIGATORY_USERNAME_FIELD;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.common.base.Strings;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,6 +42,7 @@ import wolox.training.exceptions.BookNotFoundException;
  */
 @Entity
 @Table(name = "t_user")
+@ApiModel(description = "Users from Open Library")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class User {
 
@@ -50,18 +53,22 @@ public class User {
 
     @NotNull
     @Column(nullable = false)
+    @ApiModelProperty(notes = "Username to identify the user in the system", required = true)
     private String username;
 
     @NotNull
     @Column(nullable = false)
+    @ApiModelProperty(notes = "User's real name", required = true)
     private String name;
 
     @NotNull
     @Column(nullable = false)
+    @ApiModelProperty(notes = "User's date of birth", required = true)
     private LocalDate birthdate;
 
     @NotNull
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @ApiModelProperty(notes = "User's books", required = true)
     private List<Book> books = new ArrayList<>();
 
     public User() {}
