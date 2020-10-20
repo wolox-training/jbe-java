@@ -3,8 +3,11 @@ package wolox.training.repositories;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static wolox.training.util.MessageConstants.EXCEPTION_THROWN;
+import static wolox.training.util.MessageConstants.WRONG_SIZE;
 import static wolox.training.util.MessageConstants.WRONG_USER;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import javax.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
@@ -48,5 +51,19 @@ class UserRepositoryTest {
         User u = new User();
 
         assertThrows(ConstraintViolationException.class, () -> userRepository.saveAndFlush(u), EXCEPTION_THROWN);
+    }
+
+    @Test
+    void whenFindAllUsersBetweenTwoBirthdatesAndContainingCharactersInName_ThenReturnList() {
+        LocalDate startDate = LocalDate.of(1940, 12, 13);
+        LocalDate endDate = LocalDate.of(2000, 4, 5);
+        String name = "ua";
+
+        User user = MockTestEntities.mockNewUser();
+        userRepository.saveAndFlush(user);
+        List<User> users = userRepository.findAllByBirthdateBetweenAndNameContainingIgnoreCase(startDate, endDate,
+            name);
+        assertEquals(1, users.size(), WRONG_SIZE);
+        assertEquals(user, users.get(0), WRONG_USER);
     }
 }
