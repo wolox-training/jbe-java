@@ -66,6 +66,7 @@ public class BookController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         Book b =
             bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(String.format(BOOK_NOT_FOUND, id)));
