@@ -6,6 +6,13 @@ import java.time.LocalDate;
 import wolox.training.models.Book;
 import wolox.training.models.User;
 
+/**
+ * Class to mock the objects of the necessary entities in the tests
+ *
+ * @author Juan David Bermudez
+ * @version 1.0
+ * @since 1.0
+ */
 public class MockTestEntities {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
