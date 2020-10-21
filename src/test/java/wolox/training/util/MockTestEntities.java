@@ -53,6 +53,7 @@ public class MockTestEntities {
         newBook.setPages("496");
         newBook.setYear("2016");
         newBook.setPublisher("DEBATE");
+        newBook.setGenre("Natural History");
 
         return newBook;
     }

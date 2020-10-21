@@ -26,6 +26,9 @@ class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
+    public static final LocalDate START_DATE = LocalDate.of(1981, 12, 13);
+    public static final LocalDate END_DATE = LocalDate.of(2000, 4, 5);
+    public static final String NAME = "ua";
 
     @Test
     void whenCreateUser_ThenIsPersisted() {
@@ -55,15 +58,51 @@ class UserRepositoryTest {
 
     @Test
     void whenFindAllUsersBetweenTwoBirthdatesAndContainingCharactersInName_ThenReturnList() {
-        LocalDate startDate = LocalDate.of(1940, 12, 13);
-        LocalDate endDate = LocalDate.of(2000, 4, 5);
-        String name = "ua";
-
         User user = MockTestEntities.mockNewUser();
         userRepository.saveAndFlush(user);
-        List<User> users = userRepository.findAllByBirthdateBetweenAndNameContainingIgnoreCase(startDate, endDate,
-            name);
+
+        List<User> users = userRepository.findAllByBirthdateBetweenAndNameContainingIgnoreCase(START_DATE, END_DATE,
+            NAME);
         assertEquals(1, users.size(), WRONG_SIZE);
         assertEquals(user, users.get(0), WRONG_USER);
+    }
+
+    @Test
+    void whenFindAllUsersBetweenTwoBirthdatesAndContainingCharactersInNameWithNullStartdate_ThenReturnList() {
+        User user = MockTestEntities.mockNewUser();
+        userRepository.saveAndFlush(user);
+
+        List<User> users = userRepository.findAllByBirthdateBetweenAndNameContainingIgnoreCase(null, END_DATE, NAME);
+        assertEquals(1, users.size(), WRONG_SIZE);
+        assertEquals(user, users.get(0), WRONG_USER);
+    }
+
+    @Test
+    void whenFindAllUsersBetweenTwoBirthdatesAndContainingCharactersInNameWithNullEnddate_ThenReturnList() {
+        User user = MockTestEntities.mockNewUser();
+        userRepository.saveAndFlush(user);
+
+        List<User> users = userRepository.findAllByBirthdateBetweenAndNameContainingIgnoreCase(START_DATE, null, NAME);
+        assertEquals(1, users.size(), WRONG_SIZE);
+        assertEquals(user, users.get(0), WRONG_USER);
+    }
+
+    @Test
+    void whenFindAllUsersBetweenTwoBirthdatesAndContainingCharactersInNameWithNullName_ThenReturnList() {
+        User user = MockTestEntities.mockNewUser();
+        userRepository.saveAndFlush(user);
+
+        List<User> users = userRepository.findAllByBirthdateBetweenAndNameContainingIgnoreCase(START_DATE, END_DATE, null);
+        assertEquals(1, users.size(), WRONG_SIZE);
+        assertEquals(user, users.get(0), WRONG_USER);
+    }
+
+    @Test
+    void whenFindAllUsersBetweenTwoBirthdatesAndContainingCharactersInNameWithNulls_ThenReturnList() {
+        User user = MockTestEntities.mockNewUser();
+        userRepository.saveAndFlush(user);
+
+        List<User> users = userRepository.findAllByBirthdateBetweenAndNameContainingIgnoreCase(null, null, null);
+        assertEquals(1, users.size(), WRONG_SIZE);
     }
 }

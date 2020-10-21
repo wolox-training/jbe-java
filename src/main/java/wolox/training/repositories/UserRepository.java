@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import wolox.training.models.User;
 
 /**
@@ -27,12 +29,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     /**
      * find all user between two birthdates and containing a character sequence in their name
      *
-     * @param startDate must not be null
-     * @param endDate must not be null
-     * @param name must not be null
+     * @param startDate can be null
+     * @param endDate   can be null
+     * @param name      can be null
      * @return all found users
-     * @throws IllegalArgumentException if some argument is null
      */
-    List<User> findAllByBirthdateBetweenAndNameContainingIgnoreCase(LocalDate startDate, LocalDate endDate,
-        String name);
+    @Query("SELECT u FROM User u WHERE (:startDate IS NULL OR :endDate IS NULL OR u.birthdate BETWEEN :startDate AND "
+        + ":endDate) OR (:name IS NULL OR UPPER(u.name) LIKE UPPER(:name))")
+    List<User> findAllByBirthdateBetweenAndNameContainingIgnoreCase(@Param("startDate") LocalDate startDate,
+        @Param("endDate") LocalDate endDate, @Param("name") String name);
 }
