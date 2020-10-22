@@ -32,6 +32,7 @@ import javax.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import wolox.training.exceptions.BookAlreadyOwnedException;
 import wolox.training.exceptions.BookNotFoundException;
@@ -63,6 +64,10 @@ public class User {
     @ApiModelProperty(notes = "Username to identify the user in the system", required = true)
     @Getter
     private String username;
+
+    @Getter
+    @Setter
+    private String password;
 
     @NotNull
     @Column(nullable = false)

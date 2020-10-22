@@ -6,25 +6,27 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static wolox.training.util.MockMvcHttpRequests.doGet;
+import static wolox.training.util.MockMvcHttpRequests.doPost;
 
-import java.time.LocalDate;
 import java.util.Optional;
-import java.util.logging.Logger;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import wolox.training.models.Book;
 import wolox.training.models.User;
 import wolox.training.repositories.BookRepository;
 import wolox.training.repositories.UserRepository;
+import wolox.training.security.CustomAuthenticationProvider;
 import wolox.training.util.JsonUtil;
 import wolox.training.util.MockTestEntities;
 
 @WebMvcTest(controllers = UserController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class UserControllerTest {
 
     private static final long MAGIC_ID = 1L;
@@ -32,36 +34,33 @@ class UserControllerTest {
     private UserRepository userRepository;
     @MockBean
     private BookRepository bookRepository;
+    @MockBean
+    private CustomAuthenticationProvider customAuthenticationProvider;
 
     @Autowired
     private MockMvc mockMvc;
     private static final String BASE_PATH = "/users";
     private static User newUser;
+    private static User persistedUser;
 
     @BeforeAll
     static void setUp() {
         newUser = MockTestEntities.mockNewUser();
+        persistedUser = MockTestEntities.mockPersistedUser();
     }
 
     @Test
     void whenFindUserById_ThenHttpStatus200() throws Exception {
-        given(userRepository.findById(MAGIC_ID)).willReturn(Optional.of(newUser));
+        given(userRepository.findById(MAGIC_ID)).willReturn(Optional.of(persistedUser));
 
-        String response = mockMvc.perform(get(BASE_PATH + "/1").accept(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andReturn().getResponse().getContentAsString();
-
-        Logger.getLogger(UserControllerTest.class.getName()).info(response);
+        doGet(mockMvc, BASE_PATH + "/1")
+            .andExpect(status().isOk());
     }
 
     @Test
     void whenCreateUser_ThenHttpStatus201() throws Exception {
-        mockMvc.perform(post(BASE_PATH)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(JsonUtil.toJson(newUser)))
-            .andDo(print())
-            .andExpect(status().isCreated());
+        doPost(mockMvc, BASE_PATH, newUser).
+            andExpect(status().isCreated());
     }
 
     @Test
@@ -69,11 +68,9 @@ class UserControllerTest {
         given(userRepository.findById(MAGIC_ID)).willReturn(Optional.of(newUser));
         given(bookRepository.existsById(MAGIC_ID)).willReturn(true);
 
-        Book book = MockTestEntities.mockPersistedBook();
-
         mockMvc.perform(patch(BASE_PATH + "/1/books")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(JsonUtil.toJson(book)))
+            .content(JsonUtil.toJson(MockTestEntities.mockPersistedBook())))
             .andDo(print())
             .andExpect(status().isNoContent());
     }
