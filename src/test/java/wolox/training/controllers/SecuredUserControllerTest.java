@@ -1,5 +1,6 @@
 package wolox.training.controllers;
 
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -77,5 +78,22 @@ class SecuredUserControllerTest {
         doPut(mockMvc, BASE_PATH + "/1", persistedUser)
             .andExpect(status().isUnauthorized())
             .andExpect(header().exists("WWW-Authenticate"));
+    }
+
+    @Test
+    void whenUpdatePasswordWithoutAuthentication_ThenHttpStatus401() throws Exception {
+        doPut(mockMvc, BASE_PATH + "/1/password", persistedUser)
+            .andExpect(status().isUnauthorized())
+            .andExpect(header().exists("WWW-Authenticate"));
+    }
+
+    @Test
+    @WithMockUser
+    void whenUpdatePassword_ThenHttpStatus204() throws Exception {
+        given(userRepository.existsById(1L)).willReturn(true);
+        persistedUser.setPassword("1234567890");
+
+        doPut(mockMvc, BASE_PATH + "/1/password", persistedUser)
+            .andExpect(status().isNoContent());
     }
 }

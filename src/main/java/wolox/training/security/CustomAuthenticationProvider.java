@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import wolox.training.models.User;
 import wolox.training.repositories.UserRepository;
@@ -15,6 +16,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder encoder;
 
     @Override
     public Authentication authenticate(Authentication authentication) {
@@ -22,7 +25,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         final String password = authentication.getCredentials().toString();
         final Optional<User> optionalUser = userRepository.findOneByUsername(name);
 
-        if (optionalUser.isPresent() && optionalUser.get().getPassword().equals(password)) {
+        if (optionalUser.isPresent() &&
+            encoder.matches(password, optionalUser.get().getPassword())) {
             return new UsernamePasswordAuthenticationToken(name, password, new ArrayList<>());
         } else {
             return null;

@@ -75,6 +75,7 @@ public class MockTestEntities {
         objectNode.put("name", "Samatha Ortega");
         objectNode.put("username", "samanthao");
         objectNode.put("birthdate", "1993-01-01");
+        objectNode.put("password", "prueba");
 
         return OBJECT_MAPPER.convertValue(objectNode, User.class);
     }
@@ -89,6 +90,7 @@ public class MockTestEntities {
         user.setBirthdate(LocalDate.of(1983, 2, 15));
         user.setName("Juan David Celedon");
         user.setUsername("juandc");
+        user.setPassword("testing");
         return user;
     }
 }

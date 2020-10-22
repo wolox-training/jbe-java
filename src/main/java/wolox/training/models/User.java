@@ -34,7 +34,6 @@ import javax.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import wolox.training.exceptions.BookAlreadyOwnedException;
@@ -68,6 +67,7 @@ public class User {
     @Getter
     private String username;
 
+    @ApiModelProperty(notes = "User's password")
     @Getter
     @JsonProperty(access = Access.WRITE_ONLY)
     private String password;

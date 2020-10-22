@@ -1,13 +1,12 @@
 package wolox.training.controllers;
 
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static wolox.training.util.MockMvcHttpRequests.doGet;
 import static wolox.training.util.MockMvcHttpRequests.doPost;
+import static wolox.training.util.MockMvcHttpRequests.doPut;
 
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeAll;
@@ -72,6 +71,15 @@ class UserControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(JsonUtil.toJson(MockTestEntities.mockPersistedBook())))
             .andDo(print())
+            .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void whenUpdatePassword_ThenHttpStatus204() throws Exception {
+        given(userRepository.existsById(1L)).willReturn(true);
+        persistedUser.setPassword("1234567890");
+
+        doPut(mockMvc, BASE_PATH + "/1/password", persistedUser)
             .andExpect(status().isNoContent());
     }
 }
