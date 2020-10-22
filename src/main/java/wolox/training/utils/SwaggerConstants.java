@@ -16,6 +16,7 @@ public final class SwaggerConstants {
     public static final String USER_CONTROLLER_CREATE = "Add a new user";
     public static final String USER_CONTROLLER_DELETE = "Remove an existing user";
     public static final String USER_CONTROLLER_UPDATE = "Update an existing user";
+    public static final String USER_CONTROLLER_UPDATE_PASSWORD = "Update an existing user password";
     public static final String USER_CONTROLLER_ADD_BOOK = "Add a new book to user's collection";
     public static final String USER_CONTROLLER_REMOVE_BOOK = "Remove a book from user's collection";
     // Api response
@@ -25,7 +26,8 @@ public final class SwaggerConstants {
     public static final String USER_CONTROLLER_FIND_ALL_200 = "Succesfully retrieved users";
     public static final String USER_CONTROLLER_FIND_200 = "Succesfully retrieved user";
     public static final String USER_CONTROLLER_CREATE_201 = "User succesfully added";
-    public static final String USER_CONTROLLER_UPDATE_204 = "User succesfully updated";
+    public static final String USER_CONTROLLER_UPDATE_200 = "User succesfully updated";
+    public static final String USER_CONTROLLER_UPDATE_PASSWORD_204 = "User password succesfully updated";
     public static final String USER_CONTROLLER_REMOVE_204 = "User succesfully removed";
     public static final String USER_CONTROLLER_ADD_BOOK_204 = "Book succesfully added";
     public static final String USER_CONTROLLER_REMOVE_BOOK_204 = "Book succesfully removed";

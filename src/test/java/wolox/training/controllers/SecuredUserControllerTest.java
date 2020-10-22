@@ -1,8 +1,8 @@
 package wolox.training.controllers;
 
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static wolox.training.util.MockMvcHttpRequests.doGet;
 import static wolox.training.util.MockMvcHttpRequests.doPost;
@@ -12,23 +12,19 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import wolox.training.models.User;
 import wolox.training.repositories.BookRepository;
 import wolox.training.repositories.UserRepository;
 import wolox.training.security.CustomAuthenticationProvider;
-import wolox.training.util.JsonUtil;
 import wolox.training.util.MockTestEntities;
 
-@WebMvcTest(controllers = UserController.class)
-@AutoConfigureMockMvc(addFilters = false)
-class UserControllerTest {
+@WebMvcTest(UserController.class)
+class SecuredUserControllerTest {
 
-    private static final long MAGIC_ID = 1L;
     @MockBean
     private UserRepository userRepository;
     @MockBean
@@ -49,32 +45,50 @@ class UserControllerTest {
     }
 
     @Test
-    void whenFindUserById_ThenHttpStatus200() throws Exception {
-        given(userRepository.findById(MAGIC_ID)).willReturn(Optional.of(persistedUser));
+    void whenCreateUserWithoutAuthentication_ThenIsPersistedAndHttpStatus201() throws Exception {
+        doPost(mockMvc, BASE_PATH, newUser)
+            .andExpect(status().isCreated());
+    }
 
-        doGet(mockMvc, BASE_PATH + "/1")
+    @Test
+    @WithMockUser
+    void whenFindAllUsers_ThenHttpStatus200() throws Exception {
+        doGet(mockMvc, BASE_PATH)
             .andExpect(status().isOk());
     }
 
     @Test
-    void whenCreateUser_ThenHttpStatus201() throws Exception {
-        doPost(mockMvc, BASE_PATH, newUser).
-            andExpect(status().isCreated());
+    void whenFindAllUsersWithoutAuthentication_ThenHttpStatus401() throws Exception {
+        doGet(mockMvc, BASE_PATH)
+            .andExpect(status().isUnauthorized())
+            .andExpect(header().exists("WWW-Authenticate"));
     }
 
     @Test
-    void whenAddBookToUser_ThenHttpStatus204() throws Exception {
-        given(userRepository.findById(MAGIC_ID)).willReturn(Optional.of(newUser));
-        given(bookRepository.existsById(MAGIC_ID)).willReturn(true);
+    void whenFindUserByIdWithoutAuthentication_ThenHttpStatus401() throws Exception {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(persistedUser));
 
-        mockMvc.perform(patch(BASE_PATH + "/1/books")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(JsonUtil.toJson(MockTestEntities.mockPersistedBook())))
-            .andDo(print())
-            .andExpect(status().isNoContent());
+        doGet(mockMvc, BASE_PATH + "/1")
+            .andExpect(status().isUnauthorized())
+            .andExpect(header().exists("WWW-Authenticate"));
     }
 
     @Test
+    void whenUpdateUserWithoutAuthentication_ThenHttpStatus401() throws Exception {
+        doPut(mockMvc, BASE_PATH + "/1", persistedUser)
+            .andExpect(status().isUnauthorized())
+            .andExpect(header().exists("WWW-Authenticate"));
+    }
+
+    @Test
+    void whenUpdatePasswordWithoutAuthentication_ThenHttpStatus401() throws Exception {
+        doPut(mockMvc, BASE_PATH + "/1/password", persistedUser)
+            .andExpect(status().isUnauthorized())
+            .andExpect(header().exists("WWW-Authenticate"));
+    }
+
+    @Test
+    @WithMockUser
     void whenUpdatePassword_ThenHttpStatus204() throws Exception {
         given(userRepository.existsById(1L)).willReturn(true);
         persistedUser.setPassword("1234567890");

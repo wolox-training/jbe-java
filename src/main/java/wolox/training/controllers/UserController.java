@@ -21,7 +21,9 @@ import static wolox.training.utils.SwaggerConstants.USER_CONTROLLER_REMOVE_204;
 import static wolox.training.utils.SwaggerConstants.USER_CONTROLLER_REMOVE_BOOK;
 import static wolox.training.utils.SwaggerConstants.USER_CONTROLLER_REMOVE_BOOK_204;
 import static wolox.training.utils.SwaggerConstants.USER_CONTROLLER_UPDATE;
-import static wolox.training.utils.SwaggerConstants.USER_CONTROLLER_UPDATE_204;
+import static wolox.training.utils.SwaggerConstants.USER_CONTROLLER_UPDATE_200;
+import static wolox.training.utils.SwaggerConstants.USER_CONTROLLER_UPDATE_PASSWORD;
+import static wolox.training.utils.SwaggerConstants.USER_CONTROLLER_UPDATE_PASSWORD_204;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -135,7 +137,7 @@ public class UserController {
 
     @ApiOperation(value = USER_CONTROLLER_UPDATE)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = USER_CONTROLLER_UPDATE_204, response = User.class),
+        @ApiResponse(code = 200, message = USER_CONTROLLER_UPDATE_200, response = User.class),
         @ApiResponse(code = 400, message = RESPONSE_CODE_400),
         @ApiResponse(code = 404, message = RESPONSE_CODE_404),
         @ApiResponse(code = 500, message = RESPONSE_CODE_500)
@@ -193,6 +195,27 @@ public class UserController {
             userRepository.save(user);
         } else {
             throw new BookNotFoundException(String.format(BOOK_NOT_FOUND, book.getId()));
+        }
+    }
+
+    @ApiOperation(value = USER_CONTROLLER_UPDATE_PASSWORD)
+    @ApiResponses(value = {
+        @ApiResponse(code = 204, message = USER_CONTROLLER_UPDATE_PASSWORD_204),
+        @ApiResponse(code = 400, message = RESPONSE_CODE_400),
+        @ApiResponse(code = 404, message = RESPONSE_CODE_404),
+        @ApiResponse(code = 500, message = RESPONSE_CODE_500)
+    })
+    @PutMapping("/{id}/password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updatePassword(
+        @ApiParam(value = "User's id", required = true) @PathVariable Long id, @RequestBody @Valid User user) {
+
+        if (!user.getId().equals(id)) {
+            throw new UserIdMismatchException(USER_ID_MISMATCH);
+        } else if (userRepository.existsById(id)) {
+            userRepository.save(user);
+        } else {
+            throw new UserNotFoundException(String.format(USER_NOT_FOUND, id));
         }
     }
 }

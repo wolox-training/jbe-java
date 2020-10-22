@@ -1,7 +1,9 @@
 package wolox.training.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.LocalDate;
 import wolox.training.models.Book;
 import wolox.training.models.User;
@@ -64,12 +66,16 @@ public class MockTestEntities {
      * @return new user with id 1L
      */
     public static User mockPersistedUser() {
+        OBJECT_MAPPER.registerModule(new JavaTimeModule());
+        OBJECT_MAPPER.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
         ObjectNode objectNode = OBJECT_MAPPER.createObjectNode();
 
         objectNode.put("id", 1);
         objectNode.put("name", "Samatha Ortega");
         objectNode.put("username", "samanthao");
-        objectNode.put("birthdate", "1993-01-1");
+        objectNode.put("birthdate", "1993-01-01");
+        objectNode.put("password", "prueba");
 
         return OBJECT_MAPPER.convertValue(objectNode, User.class);
     }
@@ -84,6 +90,7 @@ public class MockTestEntities {
         user.setBirthdate(LocalDate.of(1983, 2, 15));
         user.setName("Juan David Celedon");
         user.setUsername("juandc");
+        user.setPassword("testing");
         return user;
     }
 }
