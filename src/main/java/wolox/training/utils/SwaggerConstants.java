@@ -10,8 +10,8 @@ package wolox.training.utils;
 public final class SwaggerConstants {
 
     // Api operation
-    public static final String USER_CONTROLLER_FIND_ALL = "find all users";
-    public static final String USER_CONTROLLER_FIND_BY_ID = "find user by its id";
+    public static final String USER_CONTROLLER_FIND_ALL = "Find all users";
+    public static final String USER_CONTROLLER_FIND_BY_ID = "Find user by its id";
     public static final String USER_CONTROLLER_FIND_ONE_BY_USERNAME = "find user by its username";
     public static final String USER_CONTROLLER_CREATE = "Add a new user";
     public static final String USER_CONTROLLER_DELETE = "Remove an existing user";
@@ -19,8 +19,10 @@ public final class SwaggerConstants {
     public static final String USER_CONTROLLER_UPDATE_PASSWORD = "Update an existing user password";
     public static final String USER_CONTROLLER_ADD_BOOK = "Add a new book to user's collection";
     public static final String USER_CONTROLLER_REMOVE_BOOK = "Remove a book from user's collection";
+    public static final String USER_CONTROLLER_AUTHENTICATED_USER = "Get current authenticated user";
     // Api response
     public static final String RESPONSE_CODE_400 = "Malformed body request";
+    public static final String RESPONSE_CODE_401 = "User not authenticated";
     public static final String RESPONSE_CODE_404 = "The resource is not found";
     public static final String RESPONSE_CODE_500 = "An unexpected error happened";
     public static final String USER_CONTROLLER_FIND_ALL_200 = "Succesfully retrieved users";
