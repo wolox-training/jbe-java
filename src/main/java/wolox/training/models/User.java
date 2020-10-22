@@ -11,6 +11,8 @@ import static wolox.training.utils.ErrorConstants.OBLIGATORY_NAME_FIELD;
 import static wolox.training.utils.ErrorConstants.OBLIGATORY_USERNAME_FIELD;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.common.base.Strings;
 import io.swagger.annotations.ApiModel;
@@ -34,6 +36,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import wolox.training.exceptions.BookAlreadyOwnedException;
 import wolox.training.exceptions.BookNotFoundException;
 
@@ -66,7 +69,7 @@ public class User {
     private String username;
 
     @Getter
-    @Setter
+    @JsonProperty(access = Access.WRITE_ONLY)
     private String password;
 
     @NotNull
@@ -94,6 +97,10 @@ public class User {
     public void setName(String name) {
         checkArgument(!Strings.isNullOrEmpty(name), OBLIGATORY_NAME_FIELD);
         this.name = name;
+    }
+
+    public void setPassword(String password) {
+        this.password = new BCryptPasswordEncoder().encode(password);
     }
 
     public void setBirthdate(LocalDate birthdate) {
