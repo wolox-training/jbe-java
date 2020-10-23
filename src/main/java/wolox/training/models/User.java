@@ -3,7 +3,7 @@ package wolox.training.models;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static wolox.training.utils.ErrorConstants.BOOK_ALREADY_OWNED;
-import static wolox.training.utils.ErrorConstants.BOOK_NOT_FOUND;
+import static wolox.training.utils.ErrorConstants.BOOK_ID_NOT_FOUND;
 import static wolox.training.utils.ErrorConstants.BOOK_NOT_NULL;
 import static wolox.training.utils.ErrorConstants.INVALID_BIRTHDATE;
 import static wolox.training.utils.ErrorConstants.OBLIGATORY_BIRTHDATE_FIELD;
@@ -139,7 +139,7 @@ public class User {
         if (books.contains(checkNotNull(book, BOOK_NOT_NULL))) {
             this.books.remove(book);
         } else {
-            throw new BookNotFoundException(String.format(BOOK_NOT_FOUND, book.getId()));
+            throw new BookNotFoundException(String.format(BOOK_ID_NOT_FOUND, book.getId()));
         }
     }
 }

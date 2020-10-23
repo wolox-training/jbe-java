@@ -1,6 +1,6 @@
 package wolox.training.controllers;
 
-import static wolox.training.utils.ErrorConstants.BOOK_NOT_FOUND;
+import static wolox.training.utils.ErrorConstants.BOOK_ID_NOT_FOUND;
 import static wolox.training.utils.ErrorConstants.USER_BY_USERNAME_NOT_FOUND;
 import static wolox.training.utils.ErrorConstants.USER_ID_MISMATCH;
 import static wolox.training.utils.ErrorConstants.USER_NOT_FOUND;
@@ -32,8 +32,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Example;
-import io.swagger.annotations.ExampleProperty;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -197,7 +195,7 @@ public class UserController {
             user.addBook(book);
             userRepository.save(user);
         } else {
-            throw new BookNotFoundException(String.format(BOOK_NOT_FOUND, book.getId()));
+            throw new BookNotFoundException(String.format(BOOK_ID_NOT_FOUND, book.getId()));
         }
     }
 
@@ -219,7 +217,7 @@ public class UserController {
             user.removeBook(book);
             userRepository.save(user);
         } else {
-            throw new BookNotFoundException(String.format(BOOK_NOT_FOUND, book.getId()));
+            throw new BookNotFoundException(String.format(BOOK_ID_NOT_FOUND, book.getId()));
         }
     }
 
