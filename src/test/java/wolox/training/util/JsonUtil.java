@@ -8,11 +8,19 @@ import java.io.IOException;
 
 public class JsonUtil {
 
-    public static byte[] toJson(Object object) throws IOException {
+    public static byte[] toJsonWithNulls(Object object) throws IOException {
+        return toJson(object, true);
+    }
+
+    public static byte[] toJsonNonNulls(Object object) throws IOException {
+        return toJson(object, false);
+    }
+
+    private static byte[] toJson(Object object, boolean includeNull) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        if (includeNull) mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         return mapper.writeValueAsBytes(object);
     }
 }

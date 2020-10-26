@@ -1,10 +1,11 @@
-package wolox.training.service;
+package wolox.training.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.net.URI;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -24,6 +25,12 @@ public class OpenLibraryService {
     public static final String SUBTITLE_ATTRIBUTE = "subtitle";
     public static final String TITLE_ATTRIBUTE = "title";
 
+    private final RestTemplate restTemplate;
+
+    public OpenLibraryService(RestTemplateBuilder builder) {
+        this.restTemplate = builder.build();
+    }
+
     @Value("${openLibraryUrl}")
     private String openLibraryUrl;
 
@@ -37,9 +44,8 @@ public class OpenLibraryService {
             .queryParam("jscmd", "data")
             .build().toUri();
 
-        RestTemplate restTemplate = new RestTemplate();
         ObjectNode objectNode = restTemplate.getForObject(uri, ObjectNode.class);
-        objectNode = (ObjectNode) objectNode.get(isbnQueryValue);
+        objectNode = objectNode == null ? null : (ObjectNode) objectNode.get(isbnQueryValue);
 
         if (objectNode != null && !objectNode.isEmpty()) {
             ObjectMapper mapper = new ObjectMapper();
@@ -55,7 +61,7 @@ public class OpenLibraryService {
 
             return bookDTO;
         } else {
-            throw new BookNotFoundException(ErrorConstants.BOOK_ISBN_NOT_FOUND);
+            throw new BookNotFoundException(String.format(ErrorConstants.BOOK_ISBN_NOT_FOUND, isbn));
         }
     }
 }
