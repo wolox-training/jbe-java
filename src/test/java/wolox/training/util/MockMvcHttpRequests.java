@@ -5,7 +5,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static wolox.training.util.JsonUtil.toJson;
 
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -49,7 +48,7 @@ public class MockMvcHttpRequests {
     public static ResultActions doPost(MockMvc mockMvc, String path, Object body) throws Exception {
         return mockMvc.perform(post(path)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(toJson(body)))
+            .content(JsonUtil.toJsonWithNulls(body)))
             .andDo(print());
     }
 
@@ -78,7 +77,7 @@ public class MockMvcHttpRequests {
         return mockMvc.perform(put(path)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
-            .content(toJson(body)))
+            .content(JsonUtil.toJsonWithNulls(body)))
             .andDo(print());
     }
 

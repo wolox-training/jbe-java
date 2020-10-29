@@ -16,10 +16,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import wolox.training.models.Book;
 import wolox.training.repositories.BookRepository;
 import wolox.training.security.CustomAuthenticationProvider;
+import wolox.training.services.OpenLibraryService;
 import wolox.training.util.MockTestEntities;
 
 @WebMvcTest(BookController.class)
-class SecuredBooknControllerTest {
+class SecuredBookControllerTest {
 
     private static final String BASE_PATH = "/books";
     private static Book persistedBook;
@@ -29,6 +30,8 @@ class SecuredBooknControllerTest {
     private BookRepository bookRepository;
     @MockBean
     private CustomAuthenticationProvider customAuthenticationProvider;
+    @MockBean
+    private OpenLibraryService openLibraryService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -62,6 +65,13 @@ class SecuredBooknControllerTest {
     @Test
     void whenUpdateBookWithoutAuthentication_ThenHttpStatus401() throws Exception {
         doPut(mockMvc, BASE_PATH + "/1", persistedBook)
+            .andExpect(status().isUnauthorized())
+            .andExpect(header().exists("WWW-Authenticate"));
+    }
+
+    @Test
+    void whenFindBookByIsbnWithoutAuthentication_ThenHttpStatus401() throws Exception {
+        doGet(mockMvc, BASE_PATH + "?isbn=0")
             .andExpect(status().isUnauthorized())
             .andExpect(header().exists("WWW-Authenticate"));
     }

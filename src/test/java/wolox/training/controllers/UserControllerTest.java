@@ -69,7 +69,7 @@ class UserControllerTest {
 
         mockMvc.perform(patch(BASE_PATH + "/1/books")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(JsonUtil.toJson(MockTestEntities.mockPersistedBook())))
+            .content(JsonUtil.toJsonWithNulls(MockTestEntities.mockPersistedBook())))
             .andDo(print())
             .andExpect(status().isNoContent());
     }

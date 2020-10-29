@@ -26,8 +26,7 @@ import wolox.training.exceptions.BookNotFoundException;
 import wolox.training.models.Book;
 import wolox.training.models.BookDTO;
 import wolox.training.repositories.BookRepository;
-import wolox.training.service.OpenLibraryService;
-import wolox.training.utils.ErrorConstants;
+import wolox.training.services.OpenLibraryService;
 
 /**
  * Web controller to handle the books resource request

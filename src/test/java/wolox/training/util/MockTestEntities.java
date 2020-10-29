@@ -1,11 +1,20 @@
 package wolox.training.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import wolox.training.models.Book;
+import wolox.training.models.BookDTO;
 import wolox.training.models.User;
 
 /**
@@ -35,7 +44,7 @@ public class MockTestEntities {
         objectNode.put("isbn", "9780099590088");
         objectNode.put("pages", "498");
         objectNode.put("year", "2014");
-        objectNode.put("publisher", "DEBAT");
+        objectNode.put("publisher", "DEBATE");
 
         return OBJECT_MAPPER.convertValue(objectNode, Book.class);
     }
@@ -92,5 +101,56 @@ public class MockTestEntities {
         user.setUsername("juandc");
         user.setPassword("testing");
         return user;
+    }
+
+    /**
+     * Mock a returned BookDTO from OpenLibraryService
+     *
+     * @return a new BookDTO
+     */
+    public static BookDTO mockBookDTO() {
+        BookDTO bookDTO = new BookDTO();
+        bookDTO.setIsbn("0385472579");
+        bookDTO.setPageNumber("159");
+        bookDTO.setTitle("Zen speaks");
+        bookDTO.setSubtitle("shouts of nothingness");
+        bookDTO.setPublishDate("1994");
+
+        HashMap<String, String> map = new HashMap<>();
+        map.put("name", "Anchor Books");
+
+        bookDTO.setPublishers(Collections.singletonList(map));
+
+        map.clear();
+        map.put("name", "Zhizhong Cai");
+
+        bookDTO.setAuthors(Collections.singletonList(map));
+
+        return bookDTO;
+    }
+
+    /**
+     * Mock a persisted book object in a database
+     *
+     * @return new Book with id 1L
+     */
+    public static Book mockPersistedOpenLibraryBook() throws JsonProcessingException {
+        ObjectNode objectNode = OBJECT_MAPPER.valueToTree(mockBookDTO().toBook());
+        objectNode.put("id", 1);
+
+        Logger.getLogger(MockTestEntities.class.getName()).info(objectNode.asText());
+
+        return OBJECT_MAPPER.convertValue(objectNode, Book.class);
+    }
+
+    /**
+     * Mock a JSON response from OpenLibrary API
+     *
+     * @return JSON String
+     * @throws IOException If JSON file not found
+     */
+    public static String mockOpenLibraryResponse() throws IOException {
+        return Files.readAllLines(Paths.get("src", "test", "resources", "__files", "zen_speaks.json"))
+            .stream().collect(Collectors.joining());
     }
 }
