@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static wolox.training.util.MockMvcHttpRequests.doGet;
 import static wolox.training.util.MockMvcHttpRequests.doPost;
 import static wolox.training.util.MockMvcHttpRequests.doPut;
+import static wolox.training.util.ParamsConstants.MAGIC_ID;
 
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeAll;
@@ -68,7 +69,7 @@ class SecuredUserControllerTest {
 
     @Test
     void whenFindUserByIdWithoutAuthentication_ThenHttpStatus401() throws Exception {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(persistedUser));
+        when(userRepository.findById(MAGIC_ID)).thenReturn(Optional.of(persistedUser));
 
         doGet(mockMvc, BASE_PATH + "/1")
             .andExpect(status().isUnauthorized())
@@ -107,7 +108,7 @@ class SecuredUserControllerTest {
     @Test
     @WithMockUser
     void whenUpdatePassword_ThenHttpStatus204() throws Exception {
-        given(userRepository.existsById(1L)).willReturn(true);
+        given(userRepository.existsById(MAGIC_ID)).willReturn(true);
         persistedUser.setPassword("1234567890");
 
         doPut(mockMvc, BASE_PATH + "/1/password", persistedUser)

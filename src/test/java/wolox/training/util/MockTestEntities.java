@@ -1,16 +1,15 @@
 package wolox.training.util;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import wolox.training.models.Book;
@@ -70,14 +69,21 @@ public class MockTestEntities {
     }
 
     /**
+     * Mock a book list from a JSON file
+     *
+     * @return a book list
+     */
+    public static List<Book> mockBooks() throws IOException {
+        return OBJECT_MAPPER.readValue(ClassLoader.getSystemResourceAsStream("books.json"),
+            new TypeReference<List<Book>>() {});
+    }
+
+    /**
      * Mock a persisted user object in a database
      *
      * @return new user with id 1L
      */
     public static User mockPersistedUser() {
-        OBJECT_MAPPER.registerModule(new JavaTimeModule());
-        OBJECT_MAPPER.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-
         ObjectNode objectNode = OBJECT_MAPPER.createObjectNode();
 
         objectNode.put("id", 1);
@@ -134,7 +140,7 @@ public class MockTestEntities {
      *
      * @return new Book with id 1L
      */
-    public static Book mockPersistedOpenLibraryBook() throws JsonProcessingException {
+    public static Book mockPersistedOpenLibraryBook() {
         ObjectNode objectNode = OBJECT_MAPPER.valueToTree(mockBookDTO().toBook());
         objectNode.put("id", 1);
 

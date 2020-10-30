@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static wolox.training.util.MessageConstants.EXCEPTION_THROWN;
 import static wolox.training.util.MessageConstants.WRONG_SIZE;
 import static wolox.training.util.MessageConstants.WRONG_USER;
+import static wolox.training.util.ParamsConstants.MAGIC_ID;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,7 +36,7 @@ class UserRepositoryTest {
         User user = MockTestEntities.mockNewUser();
 
         userRepository.save(user);
-        Optional<User> optionalUser = userRepository.findById(1L);
+        Optional<User> optionalUser = userRepository.findById(MAGIC_ID);
 
         assertEquals(optionalUser.get(), user, WRONG_USER);
     }

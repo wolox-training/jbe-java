@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static wolox.training.util.MockMvcHttpRequests.doGet;
 import static wolox.training.util.MockMvcHttpRequests.doPost;
 import static wolox.training.util.MockMvcHttpRequests.doPut;
+import static wolox.training.util.ParamsConstants.MAGIC_ID;
 
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeAll;
@@ -28,7 +29,6 @@ import wolox.training.util.MockTestEntities;
 @AutoConfigureMockMvc(addFilters = false)
 class UserControllerTest {
 
-    private static final long MAGIC_ID = 1L;
     @MockBean
     private UserRepository userRepository;
     @MockBean
@@ -76,7 +76,7 @@ class UserControllerTest {
 
     @Test
     void whenUpdatePassword_ThenHttpStatus204() throws Exception {
-        given(userRepository.existsById(1L)).willReturn(true);
+        given(userRepository.existsById(MAGIC_ID)).willReturn(true);
         persistedUser.setPassword("1234567890");
 
         doPut(mockMvc, BASE_PATH + "/1/password", persistedUser)

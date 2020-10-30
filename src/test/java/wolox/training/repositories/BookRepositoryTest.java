@@ -1,15 +1,26 @@
 package wolox.training.repositories;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static wolox.training.util.MessageConstants.EXCEPTION_THROWN;
 import static wolox.training.util.MessageConstants.WRONG_BOOK;
 import static wolox.training.util.MessageConstants.WRONG_SIZE;
+import static wolox.training.util.ParamsConstants.AUTHOR;
+import static wolox.training.util.ParamsConstants.GENRE;
+import static wolox.training.util.ParamsConstants.IMAGE;
+import static wolox.training.util.ParamsConstants.PAGES;
+import static wolox.training.util.ParamsConstants.PUBLISHER;
+import static wolox.training.util.ParamsConstants.SUBTITLE;
+import static wolox.training.util.ParamsConstants.TITLE;
+import static wolox.training.util.ParamsConstants.YEAR;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.ConstraintViolationException;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -27,27 +38,27 @@ class BookRepositoryTest {
 
     @Autowired
     private BookRepository bookRepository;
+    private Book book;
 
-    private static Book book;
-    public static final String PUBLISHER = "DEBATE";
-    public static final String GENRE = "Natural History";
-    public static final String YEAR = "2016";
-
-    @BeforeAll
-    static void setUpBook() {
+    @BeforeEach
+    void setUpBook() throws IOException {
         book = MockTestEntities.mockNewBook();
+        bookRepository.saveAll(MockTestEntities.mockBooks());
+        bookRepository.flush();
     }
 
     @Test
     void whenCreateBook_ThenIsPersisted() {
-        bookRepository.save(book);
-        Optional<Book> optionalBook = bookRepository.findById(1L);
+        long id = bookRepository.save(book).getId();
+        Optional<Book> optionalBook = bookRepository.findById(id);
         assertEquals(book, optionalBook.get(), WRONG_BOOK);
     }
 
     @Test
     void whenCreateBookWithSameIsbn_ThenThrowException() {
         bookRepository.save(book);
+        book = MockTestEntities.mockNewBook();
+
         assertThrows(DataIntegrityViolationException.class, () -> bookRepository.saveAndFlush(book), EXCEPTION_THROWN);
     }
 
@@ -66,11 +77,18 @@ class BookRepositoryTest {
     }
 
     @Test
+    void whenFindAllBooksWithEmptyFilters_ThenReturnAllBooks() {
+        List<Book> books = bookRepository.findAll("", "", "", "", "", "", "", "");
+
+        assertNotNull(books);
+        assertEquals(28, books.size(), WRONG_SIZE);
+    }
+
+    @Test
     void whenFindAllBooksByPublisherAndGenreAndYear_ThenReturnList() {
-        bookRepository.saveAndFlush(book);
+        List<Book> books = bookRepository.findAll("", GENRE, "", "", PUBLISHER, "", "", YEAR);
 
-        List<Book> books = bookRepository.findAllByPublisherAndGenreAndYear(PUBLISHER, GENRE, YEAR);
-
+        assertNotNull(books);
         assertEquals(1, books.size(), WRONG_SIZE);
         assertEquals(PUBLISHER, books.get(0).getPublisher());
         assertEquals(GENRE, books.get(0).getGenre());
@@ -78,31 +96,67 @@ class BookRepositoryTest {
     }
 
     @Test
-    void whenFindAllBooksByPublisherAndGenreAndYearWithNullPublisherAndGenre_ThenReturnList() {
-        bookRepository.saveAndFlush(book);
+    void whenFindAllBooksByYear_ThenReturnList() {
+        List<Book> books = bookRepository.findAll("", "", "", "", "", "", "", YEAR);
 
-        List<Book> books = bookRepository.findAllByPublisherAndGenreAndYear(null, null, YEAR);
-
-        assertEquals(1, books.size(), WRONG_SIZE);
+        assertNotNull(books);
+        assertEquals(6, books.size(), WRONG_SIZE);
         assertEquals(YEAR, books.get(0).getYear());
     }
 
     @Test
-    void whenFindAllBooksByPublisherAndGenreAndYearWithNullYearAndGenre_ThenReturnList() {
-        bookRepository.saveAndFlush(book);
+    void whenFindAllBooksByPublisher_ThenReturnList() {
+        List<Book> books = bookRepository.findAll("", "", "", "", PUBLISHER, "", "", "");
 
-        List<Book> books = bookRepository.findAllByPublisherAndGenreAndYear(PUBLISHER, null, null);
-
-        assertEquals(1, books.size(), WRONG_SIZE);
+        assertNotNull(books);
+        assertEquals(19, books.size(), WRONG_SIZE);
         assertEquals(PUBLISHER, books.get(0).getPublisher());
     }
 
     @Test
-    void whenFindAllBooksByPublisherAndGenreAndYearWithNulls_ThenReturnList() {
-        bookRepository.saveAndFlush(book);
+    void whenFindAllBooksByImage_ThenReturnList() {
+        List<Book> books = bookRepository.findAll("", "", IMAGE, "", "", "", "", "");
 
-        List<Book> books = bookRepository.findAllByPublisherAndGenreAndYear(null, null, null);
+        assertNotNull(books);
+        assertEquals(28, books.size(), WRONG_SIZE);
+        assertEquals(IMAGE, books.get(27).getImage());
+    }
 
-        assertEquals(1, books.size(), WRONG_SIZE);
+    @Test
+    void whenFindAllBooksByTitle_ThenReturnList() {
+        List<Book> books = bookRepository.findAll("", "", "", "", "", "", TITLE, "");
+
+        assertNotNull(books);
+        assertEquals(2, books.size(), WRONG_SIZE);
+        assertEquals(TITLE, books.get(0).getTitle());
+    }
+
+    @Test
+    void whenFindAllBooksBySubtitle_ThenReturnList() {
+        List<Book> books = bookRepository.findAll("", "", "", "", "", SUBTITLE, "", "");
+
+        assertNotNull(books);
+        assertEquals(2, books.size(), WRONG_SIZE);
+        assertTrue(books.get(0)
+            .getSubtitle()
+            .toUpperCase()
+            .contains(SUBTITLE.toUpperCase()));
+    }
+
+    @Test
+    void whenFindAllBooksByAuthor_ThenReturnList() {
+        List<Book> books = bookRepository.findAll(AUTHOR, "", "", "", "", "", "", "");
+
+        assertNotNull(books);
+        assertEquals(6, books.size(), WRONG_SIZE);
+        assertEquals(AUTHOR.toUpperCase(), books.get(2).getAuthor().toUpperCase());
+    }
+
+    @Test
+    void whenFindAllBooksByAllFilters_ThenReturnList() {
+        List<Book> books = bookRepository.findAll(AUTHOR, GENRE, IMAGE, PAGES, PUBLISHER, SUBTITLE, TITLE, YEAR);
+
+        assertNotNull(books);
+        assertEquals(0, books.size(), WRONG_SIZE);
     }
 }

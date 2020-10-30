@@ -14,6 +14,8 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.google.common.base.Strings;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -81,6 +83,7 @@ public class User {
     @NotNull
     @Column(nullable = false)
     @ApiModelProperty(notes = "User's date of birth", required = true)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     @Getter
     private LocalDate birthdate;
 

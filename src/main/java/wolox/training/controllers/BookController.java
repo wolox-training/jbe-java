@@ -1,6 +1,5 @@
 package wolox.training.controllers;
 
-import static wolox.training.utils.ErrorConstants.BOOK_BY_AUTHOR_NOT_FOUND;
 import static wolox.training.utils.ErrorConstants.BOOK_ID_MISMATCH;
 import static wolox.training.utils.ErrorConstants.BOOK_ID_NOT_FOUND;
 
@@ -49,21 +48,24 @@ public class BookController {
     }
 
     @GetMapping
-    public List<Book> findAll() {
-        return bookRepository.findAll();
+    public List<Book> findAll(
+        @RequestParam(required = false, defaultValue = "") String author,
+        @RequestParam(required = false, defaultValue = "") String genre,
+        @RequestParam(required = false, defaultValue = "") String image,
+        @RequestParam(required = false, defaultValue = "") String pages,
+        @RequestParam(required = false, defaultValue = "") String publisher,
+        @RequestParam(required = false, defaultValue = "") String subtitle,
+        @RequestParam(required = false, defaultValue = "") String title,
+        @RequestParam(required = false, defaultValue = "") String year
+    ) {
+        return bookRepository.findAll(author, genre, image, pages, publisher, subtitle, title, year);
     }
 
     @GetMapping("/{id}")
     public Book findOne(@PathVariable Long id) {
-        return bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(String.format(
-            BOOK_ID_NOT_FOUND,
-            id)));
-    }
-
-    @GetMapping(params = "author")
-    public Book findByAuthor(@RequestParam String author) {
-        return bookRepository.findOneByAuthor(author).orElseThrow(() ->
-            new BookNotFoundException(String.format(BOOK_BY_AUTHOR_NOT_FOUND, author)));
+        return bookRepository.findById(id).orElseThrow(() ->
+            new BookNotFoundException(String.format(BOOK_ID_NOT_FOUND, id))
+        );
     }
 
     @GetMapping(params = "isbn")
@@ -88,9 +90,8 @@ public class BookController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
-        Book b =
-            bookRepository.findById(id)
-                .orElseThrow(() -> new BookNotFoundException(String.format(BOOK_ID_NOT_FOUND, id)));
+        Book b = bookRepository.findById(id)
+            .orElseThrow(() -> new BookNotFoundException(String.format(BOOK_ID_NOT_FOUND, id)));
         bookRepository.delete(b);
     }
 
