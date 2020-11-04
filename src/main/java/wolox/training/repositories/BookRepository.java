@@ -2,6 +2,8 @@ package wolox.training.repositories;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -38,9 +40,9 @@ public interface BookRepository extends JpaRepository<Book, Long> {
         + "CONCAT('%',UPPER(:subtitle),'%')) AND (LENGTH(:title) = 0 OR UPPER(b.title) LIKE "
         + "CONCAT('%',UPPER(:title),'%')) AND (LENGTH(:year) = 0 OR UPPER(b.year) LIKE "
         + "CONCAT('%',UPPER(:year),'%'))")
-    List<Book> findAll(@Param("author") String author, @Param("genre") String genre, @Param("image") String image,
+    Page<Book> findAll(@Param("author") String author, @Param("genre") String genre, @Param("image") String image,
         @Param("pages") String pages, @Param("publisher") String publisher, @Param("subtitle") String subtitle,
-        @Param("title") String title, @Param("year") String year);
+        @Param("title") String title, @Param("year") String year, Pageable pageable);
 
     /**
      * find a book by its ISBN

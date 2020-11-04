@@ -6,8 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static wolox.training.util.MessageConstants.EXCEPTION_THROWN;
 import static wolox.training.util.MessageConstants.WRONG_BOOK;
+import static wolox.training.util.MessageConstants.WRONG_PAGE;
+import static wolox.training.util.MessageConstants.WRONG_PAGE_SIZE;
 import static wolox.training.util.MessageConstants.WRONG_SIZE;
 import static wolox.training.util.ParamsConstants.AUTHOR;
+import static wolox.training.util.ParamsConstants.DEFAULT_PAGEABLE;
 import static wolox.training.util.ParamsConstants.GENRE;
 import static wolox.training.util.ParamsConstants.IMAGE;
 import static wolox.training.util.ParamsConstants.PAGES;
@@ -17,7 +20,6 @@ import static wolox.training.util.ParamsConstants.TITLE;
 import static wolox.training.util.ParamsConstants.YEAR;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 import javax.validation.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +27,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import wolox.training.models.Book;
 import wolox.training.util.MockTestEntities;
 
@@ -78,66 +83,66 @@ class BookRepositoryTest {
 
     @Test
     void whenFindAllBooksWithEmptyFilters_ThenReturnAllBooks() {
-        List<Book> books = bookRepository.findAll("", "", "", "", "", "", "", "");
+        Page<Book> books = bookRepository.findAll("", "", "", "", "", "", "", "", DEFAULT_PAGEABLE);
 
         assertNotNull(books);
-        assertEquals(28, books.size(), WRONG_SIZE);
+        assertEquals(27, books.getTotalElements(), WRONG_SIZE);
     }
 
     @Test
     void whenFindAllBooksByPublisherAndGenreAndYear_ThenReturnList() {
-        List<Book> books = bookRepository.findAll("", GENRE, "", "", PUBLISHER, "", "", YEAR);
+        Page<Book> books = bookRepository.findAll("", GENRE, "", "", PUBLISHER, "", "", YEAR, DEFAULT_PAGEABLE);
 
         assertNotNull(books);
-        assertEquals(1, books.size(), WRONG_SIZE);
-        assertEquals(PUBLISHER, books.get(0).getPublisher());
-        assertEquals(GENRE, books.get(0).getGenre());
-        assertEquals(YEAR, books.get(0).getYear());
+        assertEquals(1, books.getTotalElements(), WRONG_SIZE);
+        assertEquals(PUBLISHER, books.getContent().get(0).getPublisher());
+        assertEquals(GENRE, books.getContent().get(0).getGenre());
+        assertEquals(YEAR, books.getContent().get(0).getYear());
     }
 
     @Test
     void whenFindAllBooksByYear_ThenReturnList() {
-        List<Book> books = bookRepository.findAll("", "", "", "", "", "", "", YEAR);
+        Page<Book> books = bookRepository.findAll("", "", "", "", "", "", "", YEAR, DEFAULT_PAGEABLE);
 
         assertNotNull(books);
-        assertEquals(6, books.size(), WRONG_SIZE);
-        assertEquals(YEAR, books.get(0).getYear());
+        assertEquals(6, books.getTotalElements(), WRONG_SIZE);
+        assertEquals(YEAR, books.getContent().get(0).getYear());
     }
 
     @Test
     void whenFindAllBooksByPublisher_ThenReturnList() {
-        List<Book> books = bookRepository.findAll("", "", "", "", PUBLISHER, "", "", "");
+        Page<Book> books = bookRepository.findAll("", "", "", "", PUBLISHER, "", "", "", DEFAULT_PAGEABLE);
 
         assertNotNull(books);
-        assertEquals(19, books.size(), WRONG_SIZE);
-        assertEquals(PUBLISHER, books.get(0).getPublisher());
+        assertEquals(18, books.getTotalElements(), WRONG_SIZE);
+        assertEquals(PUBLISHER, books.getContent().get(0).getPublisher());
     }
 
     @Test
     void whenFindAllBooksByImage_ThenReturnList() {
-        List<Book> books = bookRepository.findAll("", "", IMAGE, "", "", "", "", "");
+        Page<Book> books = bookRepository.findAll("", "", IMAGE, "", "", "", "", "", DEFAULT_PAGEABLE);
 
         assertNotNull(books);
-        assertEquals(28, books.size(), WRONG_SIZE);
-        assertEquals(IMAGE, books.get(27).getImage());
+        assertEquals(27, books.getTotalElements(), WRONG_SIZE);
+        assertEquals(IMAGE, books.getContent().get(19).getImage());
     }
 
     @Test
     void whenFindAllBooksByTitle_ThenReturnList() {
-        List<Book> books = bookRepository.findAll("", "", "", "", "", "", TITLE, "");
+        Page<Book> books = bookRepository.findAll("", "", "", "", "", "", TITLE, "", DEFAULT_PAGEABLE);
 
         assertNotNull(books);
-        assertEquals(2, books.size(), WRONG_SIZE);
-        assertEquals(TITLE, books.get(0).getTitle());
+        assertEquals(2, books.getTotalElements(), WRONG_SIZE);
+        assertEquals(TITLE, books.getContent().get(0).getTitle());
     }
 
     @Test
     void whenFindAllBooksBySubtitle_ThenReturnList() {
-        List<Book> books = bookRepository.findAll("", "", "", "", "", SUBTITLE, "", "");
+        Page<Book> books = bookRepository.findAll("", "", "", "", "", SUBTITLE, "", "", DEFAULT_PAGEABLE);
 
         assertNotNull(books);
-        assertEquals(2, books.size(), WRONG_SIZE);
-        assertTrue(books.get(0)
+        assertEquals(2, books.getTotalElements(), WRONG_SIZE);
+        assertTrue(books.getContent().get(0)
             .getSubtitle()
             .toUpperCase()
             .contains(SUBTITLE.toUpperCase()));
@@ -145,18 +150,42 @@ class BookRepositoryTest {
 
     @Test
     void whenFindAllBooksByAuthor_ThenReturnList() {
-        List<Book> books = bookRepository.findAll(AUTHOR, "", "", "", "", "", "", "");
+        Page<Book> books = bookRepository.findAll(AUTHOR, "", "", "", "", "", "", "", DEFAULT_PAGEABLE);
 
         assertNotNull(books);
-        assertEquals(6, books.size(), WRONG_SIZE);
-        assertEquals(AUTHOR.toUpperCase(), books.get(2).getAuthor().toUpperCase());
+        assertEquals(6, books.getTotalElements(), WRONG_SIZE);
+        assertEquals(AUTHOR.toUpperCase(), books.getContent().get(2).getAuthor().toUpperCase());
     }
 
     @Test
     void whenFindAllBooksByAllFilters_ThenReturnList() {
-        List<Book> books = bookRepository.findAll(AUTHOR, GENRE, IMAGE, PAGES, PUBLISHER, SUBTITLE, TITLE, YEAR);
+        Page<Book> books = bookRepository.findAll(AUTHOR, GENRE, IMAGE, PAGES, PUBLISHER, SUBTITLE, TITLE, YEAR,
+            DEFAULT_PAGEABLE);
 
         assertNotNull(books);
-        assertEquals(0, books.size(), WRONG_SIZE);
+        assertEquals(0, books.getTotalElements(), WRONG_SIZE);
+    }
+
+    @Test
+    void whenFindAllBooksWithPageSize_ThenReturnPage() {
+        Page<Book> bookPage = bookRepository.findAll("", "", "", "", "", "", "", "", PageRequest.of(0, 5));
+
+        assertNotNull(bookPage);
+        assertEquals(0, bookPage.getNumber(), WRONG_PAGE);
+        assertEquals(5, bookPage.getSize(), WRONG_PAGE_SIZE);
+        assertEquals(5, bookPage.getNumberOfElements(), WRONG_SIZE);
+    }
+
+    @Test
+    void whenFindAllBooksWithPageSizeAndSortedByTitle_ThenReturnSortedPage() {
+        Page<Book> bookPage = bookRepository.findAll("", "", "", "", "", "", "", "",
+            PageRequest.of(0, 5, Sort.by("title").ascending()));
+
+        assertNotNull(bookPage);
+        assertEquals(0, bookPage.getNumber(), WRONG_PAGE);
+        assertEquals(5, bookPage.getSize(), WRONG_PAGE_SIZE);
+        assertEquals(5, bookPage.getNumberOfElements(), WRONG_SIZE);
+        assertTrue(bookPage.getSort().isSorted());
+        assertEquals("9781603090476", bookPage.getContent().get(0).getIsbn());
     }
 }

@@ -79,37 +79,6 @@ public class MockTestEntities {
     }
 
     /**
-     * Mock a persisted user object in a database
-     *
-     * @return new user with id 1L
-     */
-    public static User mockPersistedUser() {
-        ObjectNode objectNode = OBJECT_MAPPER.createObjectNode();
-
-        objectNode.put("id", 1);
-        objectNode.put("name", "Samatha Ortega");
-        objectNode.put("username", "samanthao");
-        objectNode.put("birthdate", "1993-01-01");
-        objectNode.put("password", "prueba");
-
-        return OBJECT_MAPPER.convertValue(objectNode, User.class);
-    }
-
-    /**
-     * Mock a new user object to be persisted
-     *
-     * @return new user
-     */
-    public static User mockNewUser() {
-        User user = new User();
-        user.setBirthdate(LocalDate.of(1983, 2, 15));
-        user.setName("Juan David Celedon");
-        user.setUsername("juandc");
-        user.setPassword("testing");
-        return user;
-    }
-
-    /**
      * Mock a returned BookDTO from OpenLibraryService
      *
      * @return a new BookDTO
@@ -150,13 +119,43 @@ public class MockTestEntities {
     }
 
     /**
-     * Mock a JSON response from OpenLibrary API
+     * Mock a user list from a JSON file
      *
-     * @return JSON String
-     * @throws IOException If JSON file not found
+     * @return a user list
      */
-    public static String mockOpenLibraryResponse() throws IOException {
-        return Files.readAllLines(Paths.get("src", "test", "resources", "__files", "zen_speaks.json"))
-            .stream().collect(Collectors.joining());
+    public static List<User> mockUsers() throws IOException {
+        return OBJECT_MAPPER.readValue(ClassLoader.getSystemResourceAsStream("users.json"),
+            new TypeReference<List<User>>() {});
+    }
+
+    /**
+     * Mock a persisted user object in a database
+     *
+     * @return new user with id 1L
+     */
+    public static User mockPersistedUser() {
+        ObjectNode objectNode = OBJECT_MAPPER.createObjectNode();
+
+        objectNode.put("id", 1);
+        objectNode.put("name", "Samatha Ortega");
+        objectNode.put("username", "samanthao");
+        objectNode.put("birthdate", "1993-01-01");
+        objectNode.put("password", "prueba");
+
+        return OBJECT_MAPPER.convertValue(objectNode, User.class);
+    }
+
+    /**
+     * Mock a new user object to be persisted
+     *
+     * @return new user
+     */
+    public static User mockNewUser() {
+        User user = new User();
+        user.setBirthdate(LocalDate.of(1983, 2, 15));
+        user.setName("Juan David Celedon");
+        user.setUsername("juandc");
+        user.setPassword("testing");
+        return user;
     }
 }

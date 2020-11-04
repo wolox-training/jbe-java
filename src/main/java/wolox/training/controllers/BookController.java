@@ -3,10 +3,11 @@ package wolox.training.controllers;
 import static wolox.training.utils.ErrorConstants.BOOK_ID_MISMATCH;
 import static wolox.training.utils.ErrorConstants.BOOK_ID_NOT_FOUND;
 
-import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +49,7 @@ public class BookController {
     }
 
     @GetMapping
-    public List<Book> findAll(
+    public Page<Book> findAll(
         @RequestParam(required = false, defaultValue = "") String author,
         @RequestParam(required = false, defaultValue = "") String genre,
         @RequestParam(required = false, defaultValue = "") String image,
@@ -56,9 +57,10 @@ public class BookController {
         @RequestParam(required = false, defaultValue = "") String publisher,
         @RequestParam(required = false, defaultValue = "") String subtitle,
         @RequestParam(required = false, defaultValue = "") String title,
-        @RequestParam(required = false, defaultValue = "") String year
+        @RequestParam(required = false, defaultValue = "") String year,
+        Pageable pageable
     ) {
-        return bookRepository.findAll(author, genre, image, pages, publisher, subtitle, title, year);
+        return bookRepository.findAll(author, genre, image, pages, publisher, subtitle, title, year, pageable);
     }
 
     @GetMapping("/{id}")
@@ -85,6 +87,7 @@ public class BookController {
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@RequestBody @Valid Book book) {
         bookRepository.save(book);
+        // TODO check ISBN and throw 409 if already exists
     }
 
     @DeleteMapping("/{id}")

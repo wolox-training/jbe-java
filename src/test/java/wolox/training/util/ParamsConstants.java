@@ -1,5 +1,9 @@
 package wolox.training.util;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
 public class ParamsConstants {
 
     public static final long MAGIC_ID = 1L;
@@ -13,4 +17,6 @@ public class ParamsConstants {
     public static final String TITLE = "Nemo";
     public static final String SUBTITLE = "Book Two";
     public static final String ISBN = "0385472579";
+
+    public static final Pageable DEFAULT_PAGEABLE = PageRequest.of(0, 20, Sort.unsorted());
 }

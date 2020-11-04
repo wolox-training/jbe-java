@@ -35,6 +35,8 @@ import io.swagger.annotations.ApiResponses;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -86,8 +88,8 @@ public class UserController {
         @ApiResponse(code = 401, message = RESPONSE_CODE_401)
     })
     @GetMapping
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public Page<User> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 
     @ApiOperation(value = USER_CONTROLLER_FIND_BY_ID, response = User.class)
